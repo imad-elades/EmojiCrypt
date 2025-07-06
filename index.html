@@ -1,0 +1,283 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>EmojiCrypt - Chiffrement par Emojis</title>
+    
+    <!-- PWA Meta Tags -->
+    <meta name="description" content="Application de chiffrement sécurisé convertissant vos messages en emojis - Développée par IMAD ELADES">
+    <meta name="keywords" content="chiffrement, emojis, sécurité, cryptographie, messages, PWA">
+    <meta name="author" content="IMAD ELADES">
+    <meta name="theme-color" content="#6366f1">
+    <meta name="apple-mobile-web-app-capable" content="yes">
+    <meta name="apple-mobile-web-app-status-bar-style" content="default">
+    <meta name="apple-mobile-web-app-title" content="EmojiCrypt">
+    <meta name="msapplication-TileColor" content="#6366f1">
+    <meta name="msapplication-config" content="/browserconfig.xml">
+    
+    <!-- PWA Manifest -->
+    <link rel="manifest" href="/manifest.json">
+    
+    <!-- Icons -->
+    <link rel="icon" type="image/png" sizes="32x32" href="/icons/icon-96x96.png">
+    <link rel="icon" type="image/png" sizes="16x16" href="/icons/icon-72x72.png">
+    <link rel="apple-touch-icon" sizes="180x180" href="/icons/icon-192x192.png">
+    <link rel="mask-icon" href="/icons/icon-192x192.png" color="#6366f1">
+    
+    <!-- Stylesheets -->
+    <link rel="stylesheet" href="css/style.css">
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
+</head>
+<body>
+    <div class="app-container">
+        <!-- Header -->
+        <header class="app-header">
+            <div class="header-content">
+                <div class="logo">
+                    <i class="fas fa-shield-alt"></i>
+                    <h1>EmojiCrypt</h1>
+                </div>
+                <div class="header-actions">
+                    <button class="theme-toggle" id="themeToggle">
+                        <i class="fas fa-moon"></i>
+                    </button>
+                    <button class="settings-btn" id="settingsBtn">
+                        <i class="fas fa-cog"></i>
+                    </button>
+                </div>
+            </div>
+        </header>
+
+        <!-- Main Content -->
+        <main class="main-content">
+            <!-- Key Management Section -->
+            <section class="key-section" id="keySection">
+                <div class="key-container">
+                    <h2><i class="fas fa-key"></i> Gestion des Clés</h2>
+                    <div class="key-input-group">
+                        <input type="password" id="encryptionKey" placeholder="Entrez votre clé de chiffrement">
+                        <button class="key-generate-btn" id="generateKeyBtn">
+                            <i class="fas fa-random"></i> Générer
+                        </button>
+                    </div>
+                    <div class="key-actions">
+                        <button class="qr-btn" id="qrBtn">
+                            <i class="fas fa-qrcode"></i> QR Code
+                        </button>
+                        <button class="key-save-btn" id="saveKeyBtn">
+                            <i class="fas fa-save"></i> Sauvegarder
+                        </button>
+                    </div>
+                </div>
+            </section>
+
+            <!-- Chat Interface -->
+            <section class="chat-section">
+                <div class="chat-container">
+                    <!-- Message Display Area -->
+                    <div class="messages-area" id="messagesArea">
+                        <div class="welcome-message">
+                            <div class="emoji-animation">🔐✨🔒</div>
+                            <h3>Bienvenue dans EmojiCrypt!</h3>
+                            <p>Chiffrez vos messages en emojis de manière sécurisée</p>
+                        </div>
+                    </div>
+
+                    <!-- Input Area -->
+                    <div class="input-area">
+                        <div class="input-container">
+                            <textarea 
+                                id="messageInput" 
+                                placeholder="Tapez votre message ici..."
+                                rows="3"
+                            ></textarea>
+                            <div class="input-actions">
+                                <button class="action-btn encrypt-btn" id="encryptBtn">
+                                    <i class="fas fa-lock"></i>
+                                    <span>Chiffrer</span>
+                                </button>
+                                <button class="action-btn decrypt-btn" id="decryptBtn">
+                                    <i class="fas fa-unlock"></i>
+                                    <span>Déchiffrer</span>
+                                </button>
+                            </div>
+                        </div>
+                        
+                        <div class="share-actions">
+                            <button class="share-btn whatsapp-btn" id="shareWhatsApp">
+                                <i class="fab fa-whatsapp"></i>
+                                <span>Partager sur WhatsApp</span>
+                            </button>
+                            <button class="share-btn copy-btn" id="copyBtn">
+                                <i class="fas fa-copy"></i>
+                                <span>Copier</span>
+                            </button>
+                            <button class="share-btn paste-btn" id="pasteBtn">
+                                <i class="fas fa-paste"></i>
+                                <span>Coller</span>
+                            </button>
+                        </div>
+                    </div>
+                </div>
+            </section>
+
+            <!-- History Section -->
+            <section class="history-section" id="historySection">
+                <div class="history-container">
+                    <h3><i class="fas fa-history"></i> Historique des Messages</h3>
+                    <div class="history-list" id="historyList">
+                        <!-- Messages will be added here dynamically -->
+                    </div>
+                    <button class="clear-history-btn" id="clearHistoryBtn">
+                        <i class="fas fa-trash"></i> Effacer l'historique
+                    </button>
+                </div>
+            </section>
+        </main>
+
+        <!-- Settings Modal -->
+        <div class="modal" id="settingsModal">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h3><i class="fas fa-cog"></i> Paramètres</h3>
+                    <button class="modal-close" id="closeSettings">
+                        <i class="fas fa-times"></i>
+                    </button>
+                </div>
+                <div class="modal-body">
+                    <div class="setting-group">
+                        <label>
+                            <input type="checkbox" id="saveHistory"> 
+                            Sauvegarder l'historique localement
+                        </label>
+                    </div>
+                    <div class="setting-group">
+                        <label>
+                            <input type="checkbox" id="biometricAuth"> 
+                            Authentification biométrique
+                        </label>
+                    </div>
+                    <div class="setting-group">
+                        <label>Algorithme de chiffrement:</label>
+                        <select id="encryptionAlgorithm">
+                            <option value="aes">AES-256</option>
+                            <option value="rsa">RSA</option>
+                        </select>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- QR Code Modal -->
+        <div class="modal" id="qrModal">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h3><i class="fas fa-qrcode"></i> Partage de Clé QR</h3>
+                    <button class="modal-close" id="closeQR">
+                        <i class="fas fa-times"></i>
+                    </button>
+                </div>
+                <div class="modal-body">
+                    <div class="qr-container" id="qrContainer">
+                        <!-- QR Code will be generated here -->
+                    </div>
+                    <p>Scannez ce QR code pour partager votre clé de chiffrement</p>
+                </div>
+            </div>
+        </div>
+
+        <!-- Loading Overlay -->
+        <div class="loading-overlay" id="loadingOverlay">
+            <div class="loading-spinner">
+                <div class="spinner"></div>
+                <p>Chiffrement en cours...</p>
+            </div>
+        </div>
+
+        <!-- Toast Notifications -->
+        <div class="toast-container" id="toastContainer">
+            <!-- Toast notifications will appear here -->
+        </div>
+    </div>
+
+    <!-- Footer with Copyright -->
+    <footer class="app-footer">
+        <div class="footer-content">
+            <p>&copy; 2025 <strong>IMAD ELADES</strong> - Tous droits réservés</p>
+            <p class="footer-subtitle">EmojiCrypt - Chiffrement sécurisé par emojis</p>
+        </div>
+    </footer>
+
+    <!-- Scripts -->
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/crypto-js/4.1.1/crypto-js.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/qrcode/1.5.3/qrcode.min.js"></script>
+    <script src="js/encryption.js"></script>
+    <script src="js/emoji-mapping.js"></script>
+    <script src="js/app.js"></script>
+    
+    <!-- PWA Service Worker Registration -->
+    <script>
+        // Enregistrement du Service Worker pour PWA
+        if ('serviceWorker' in navigator) {
+            window.addEventListener('load', () => {
+                navigator.serviceWorker.register('/sw.js')
+                    .then(registration => {
+                        console.log('Service Worker enregistré avec succès:', registration.scope);
+                        
+                        // Vérifier les mises à jour
+                        registration.addEventListener('updatefound', () => {
+                            const newWorker = registration.installing;
+                            newWorker.addEventListener('statechange', () => {
+                                if (newWorker.state === 'installed' && navigator.serviceWorker.controller) {
+                                    // Nouvelle version disponible
+                                    if (window.emojiCryptApp) {
+                                        window.emojiCryptApp.showToast('Nouvelle version disponible! Rechargez la page.', 'info');
+                                    }
+                                }
+                            });
+                        });
+                    })
+                    .catch(error => {
+                        console.log('Échec de l\'enregistrement du Service Worker:', error);
+                    });
+            });
+        }
+
+        // Gestion de l'installation PWA
+        let deferredPrompt;
+        window.addEventListener('beforeinstallprompt', (e) => {
+            e.preventDefault();
+            deferredPrompt = e;
+            
+            // Afficher un bouton d'installation personnalisé
+            setTimeout(() => {
+                if (window.emojiCryptApp) {
+                    window.emojiCryptApp.showToast('Installez EmojiCrypt sur votre appareil!', 'info');
+                }
+            }, 3000);
+        });
+
+        // Fonction pour installer l'application
+        window.installPWA = () => {
+            if (deferredPrompt) {
+                deferredPrompt.prompt();
+                deferredPrompt.userChoice.then((choiceResult) => {
+                    if (choiceResult.outcome === 'accepted') {
+                        console.log('Utilisateur a accepté l\'installation');
+                    }
+                    deferredPrompt = null;
+                });
+            }
+        };
+
+        // Détection du mode standalone (installé)
+        if (window.matchMedia('(display-mode: standalone)').matches || window.navigator.standalone) {
+            console.log('Application lancée en mode standalone');
+            document.body.classList.add('standalone-mode');
+        }
+    </script>
+</body>
+</html>
+
